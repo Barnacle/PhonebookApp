@@ -1,0 +1,62 @@
+﻿@model IEnumerable<Phonebook.Models.ContactData>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<form method="get" asp-action="Index">
+    <p>
+        <input type="search" placeholder="Enter keyword" value="@ViewData["GetSearchDetails"]" name="search" style="width: 500px;"/>
+        <input type="submit" value="search" class="btn btn-primary"/>
+        <a asp-action="Index">Reset</a>
+    </p>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.IdSortParam">@Html.DisplayNameFor(model => model.Id)</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSortParam">@Html.DisplayNameFor(model => model.Name)</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.AddressSortParam">@Html.DisplayNameFor(model => model.Address)</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.NumberSortParam">@Html.DisplayNameFor(model => model.Number)</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Number)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
