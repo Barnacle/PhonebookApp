@@ -6,10 +6,22 @@ services:
     build:
       context: .
       dockerfile: Phonebook/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_HTTPS_PORT=443
+    ports:
+      - "80:80"
+      - "443:443"
 
   phonebookapi:
     image: ${DOCKER_REGISTRY-}phonebookapi
     build:
       context: .
       dockerfile: PhonebookAPI/Dockerfile
-
+    environment:
+      - ASPNETCORE_URLS=https://+:44335;http://+:8080
+      - ASPNETCORE_HTTPS_PORT=44335
+    ports:
+      - "8080:80"
+      - "44335:443"
+    
