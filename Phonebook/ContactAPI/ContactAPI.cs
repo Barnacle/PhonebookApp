@@ -17,9 +17,9 @@ namespace Phonebook.ContactAPI
 
             var client = new HttpClient
             {
-                //BaseAddress = new Uri("https://localhost:44335/") // IIS
+                BaseAddress = new Uri("https://localhost:44335/") // IIS
                 //BaseAddress = new Uri("http://localhost:8080/")
-                BaseAddress = new Uri("http://192.168.99.100:8080")
+                //BaseAddress = new Uri("http://192.168.99.100:8080")
             };
 
             return client;

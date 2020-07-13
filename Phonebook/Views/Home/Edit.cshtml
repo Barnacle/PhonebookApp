@@ -6,6 +6,34 @@
 
 <h1>Edit</h1>
 
+<script type="text/javascript" src="/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $(".addRow").click(function () {
+
+            var rowCount = $('.phoneRow').length;
+            //$("#phoneList").append('<div class="phoneRow">@*<select name="Phones[' + rowCount + '].Type" class="phoneType">@foreach (SelectListItem item in new Phone().PhoneTypeSelectListItems){<option value="@item.Value">@item.Text</option>}</select>*@<input asp-for="Model.Number[' + rowCount + '].PhoneNumber" class="form-control" /> <a href="javascript:void(0);" class="remRow">Remove</a></div>');
+            $("#phoneList").append('<div class="phoneRow">@*<select name="Phones[' + rowCount + '].Type" class="phoneType">@foreach (SelectListItem item in new Phone().PhoneTypeSelectListItems){<option value="@item.Value">@item.Text</option>}</select>*@<input type="text" name="Number[' + rowCount + '].PhoneNumber" class="phoneNumber" /> <a href="javascript:void(0);" class="remRow">Remove</a></div>');
+        });
+
+        $("#phoneList").on('click', '.remRow', function () {
+
+            $(this).closest('.phoneRow').remove();
+
+            //$('.phoneType').each(function (index) {
+            //    $(this).attr('name', 'Phones[' + index + '].Type');
+            //});
+
+            $('.phoneNumber').each(function (index) {
+                $(this).attr('name', 'Phones[' + index + '].Number');
+            });
+        });
+    });
+
+</script>
+
 <h4>ContactData</h4>
 <hr />
 <div class="row">
@@ -22,11 +50,30 @@
                 <input asp-for="Address" class="form-control" />
                 <span asp-validation-for="Address" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Number" class="control-label"></label>
-                <input asp-for="Number" class="form-control" />
-                <span asp-validation-for="Number" class="text-danger"></span>
+
+            <div id="phoneList">
+                @if (Model != null)
+                {
+                    @if (Model.Number.Count > 0)
+                    {
+                        <span>Phone Numbers</span>
+                    }
+
+                    @for (var i = 0; i < Model.Number.Count; i++)
+                    {
+                        <div class="phoneRow">
+                            @*<input asp-for="Number[i].PhoneNumber" class="form-control" />*@
+                            @Html.TextBoxFor(model => Model.Number[i].PhoneNumber, new {@class = "phoneNumber"})
+                            <a href="javascript:void(0);" class="remRow">Remove</a>
+                        </div>
+                    }
+                }
             </div>
+
+            <p>
+                <a href="javascript:void(0);" class="addRow">Add phone number</a>
+            </p>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

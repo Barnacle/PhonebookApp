@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.EntityFrameworkCore;
 using PhonebookAPI.Models;
 
 // ReSharper disable once IdentifierTypo
@@ -21,7 +21,7 @@ namespace PhonebookAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ContactContext>(opt => opt.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContextPool<ContactContext>(opt => opt.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
         }
 

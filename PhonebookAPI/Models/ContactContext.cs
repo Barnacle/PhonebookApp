@@ -10,6 +10,14 @@ namespace PhonebookAPI.Models
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Number>()
+                .HasIndex(p => new { p.PhoneNumber })
+                .IsUnique();
+        }
+
         public DbSet<Contact> Contacts { get; set; }
+        public DbSet<Number> Numbers { get; set; }
     }
 }

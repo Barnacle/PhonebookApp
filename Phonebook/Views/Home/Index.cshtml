@@ -31,13 +31,25 @@
                 <a asp-action="Index" asp-route-sortOrder="@ViewBag.AddressSortParam">@Html.DisplayNameFor(model => model.Address)</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.NumberSortParam">@Html.DisplayNameFor(model => model.Number)</a>
+                @Html.DisplayNameFor(model => model.Number)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model)
+    {
+        var numbers = "";
+        @foreach (var phone in item.Number)
+        {
+            if (!phone.Equals(item.Number[^1]))
+            {
+                phone.PhoneNumber += ',';
+            }
+
+            numbers += phone.PhoneNumber + "\r\n";
+        }
+
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Id)
@@ -49,7 +61,7 @@
                 @Html.DisplayFor(modelItem => item.Address)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Number)
+                @Html.DisplayFor(modelItem => numbers)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
@@ -57,6 +69,6 @@
                 @Html.ActionLink("Delete", "Delete", new { id = item.Id })
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>

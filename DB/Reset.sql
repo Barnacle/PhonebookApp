@@ -1,1 +1,0 @@
-﻿DBCC CHECKIDENT (Contacts, RESEED, 2)

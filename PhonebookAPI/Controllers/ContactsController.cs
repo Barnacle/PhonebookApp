@@ -23,14 +23,14 @@ namespace PhonebookAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Contact>>> GetContacts()
         {
-            return await _context.Contacts.ToListAsync();
+            return await _context.Contacts.Include(a => a.Number).ToListAsync();
         }
 
         // GET: api/Contacts/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Contact>> GetContact(long id)
         {
-            var contact = await _context.Contacts.FindAsync(id);
+            var contact = await _context.Contacts.Include(a => a.Number).FirstOrDefaultAsync(i => i.Id == id);
 
             if (contact == null)
             {
@@ -51,7 +51,58 @@ namespace PhonebookAPI.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(contact).State = EntityState.Modified;
+            var existingParent = _context.Contacts
+                .Where(p => p.Id == contact.Id)
+                .Include(p => p.Number)
+                .SingleOrDefault();
+
+            if (existingParent != null)
+            {
+                // Update parent
+                _context.Entry(existingParent).CurrentValues.SetValues(contact);
+
+                // Delete children
+                foreach (var existingChild in existingParent.Number.ToList())
+                {
+                    //if (!contact.Number.Any(c => c.Id == existingChild.Id))
+                    //    _context.Numbers.Remove(existingChild);
+
+                    _context.Numbers.Remove(existingChild);
+                }
+
+                // Update and Insert children
+                foreach (var childModel in contact.Number)
+                {
+                    //var existingChild = existingParent.Number
+                    //    .Where(c => c.Id == childModel.Id)
+                    //    .SingleOrDefault();
+
+                    //if (existingChild != null)
+                    //    // Update child
+                    //    _context.Entry(existingChild).CurrentValues.SetValues(childModel);
+                    //else
+                    //{
+                    //    // Insert child
+                    //    var newChild = new Number
+                    //    {
+                    //        PhoneNumber = childModel.PhoneNumber,
+                    //        ContactId = childModel.ContactId
+                    //        //...
+                    //    };
+                    //    existingParent.Number.Add(newChild);
+                    //}
+
+                    var newChild = new Number
+                    {
+                        PhoneNumber = childModel.PhoneNumber,
+                        ContactId = childModel.ContactId
+                        //...
+                    };
+                    _context.Numbers.Add(newChild);
+                }
+            }
+
+            //_context.Entry(contact).State = EntityState.Modified;
 
             try {
                 await _context.SaveChangesAsync();
@@ -109,6 +160,12 @@ namespace PhonebookAPI.Controllers
         private bool ContactExists(long id)
         {
             return _context.Contacts.Any(e => e.Id == id);
+        }
+
+        [Route("updatedb")]
+        public async void UpdateDb()
+        {
+            await _context.Database.MigrateAsync();
         }
     }
 }
